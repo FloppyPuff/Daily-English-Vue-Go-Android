@@ -147,7 +147,30 @@ jobs:
       # https://daily-english.invalid/ so a CI build can never talk to a real
       # server. Use the Android Release workflow for an installable build.
       - name: Unit tests and debug build
-        run: ./gradlew testDebugUnitTest assembleDebug --no-daemon --stacktrace
+        run: |
+          set -o pipefail
+          ./gradlew testDebugUnitTest assembleDebug --no-daemon --stacktrace 2>&1 | tee build.log
+
+      # GitHub only shows job logs to signed-in users and the REST log endpoint
+      # needs admin rights. Mirror the tail of a failed build into the public
+      # job summary and a check annotation so failures stay diagnosable.
+      - name: Surface Gradle failure
+        if: failure()
+        run: |
+          {
+            echo "### Android build failure"
+            echo '```'
+            tail -n 80 build.log 2>/dev/null || echo "build.log missing"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("build.log")
+          lines = p.read_text(errors="replace").splitlines() if p.exists() else ["build.log missing"]
+          text = "\n".join(lines[-60:])
+          text = text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          print(f"::error title=Gradle failure::{text}")
+          PY
 
       - name: Upload test report
         if: always()
