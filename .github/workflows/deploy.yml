@@ -1,0 +1,169 @@
+name: Deploy
+
+# Manual production deploy. Nothing here runs until a human starts it and types
+# DEPLOY, and the `production` environment can add a second approval gate.
+#
+# Required secrets (add them to the `production` environment, not the repo):
+#   DEPLOY_HOST        host name or IP of the server
+#   DEPLOY_PORT        SSH port
+#   DEPLOY_USER        SSH user with passwordless sudo for this deploy
+#   DEPLOY_SSH_KEY     private key, PEM/OpenSSH, as one secret blob
+# Optional:
+#   DEPLOY_KNOWN_HOSTS the host's known_hosts line(s); pins the host key
+#   HEALTH_PUBLIC      e.g. https://host:8443/api/health
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type DEPLOY to install this commit on production'
+        required: true
+        type: string
+      component:
+        description: 'What to ship'
+        required: true
+        type: choice
+        options:
+          - all
+          - web
+          - backend
+        default: all
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build release tarball
+    runs-on: ubuntu-latest
+    outputs:
+      tarball: ${{ steps.pack.outputs.tarball }}
+      revision: ${{ steps.pack.outputs.revision }}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: Pack
+        id: pack
+        env:
+          COMPONENT: ${{ inputs.component }}
+        run: |
+          set -euo pipefail
+          args=(--out dist)
+          case "$COMPONENT" in
+            web) args+=(--skip-backend) ;;
+            backend) args+=(--skip-web) ;;
+            all) ;;
+            *) echo "unknown component: $COMPONENT" >&2; exit 2 ;;
+          esac
+          deploy/build-release.sh "${args[@]}"
+          tarball=$(ls dist/daily-english-*.tar.gz)
+          echo "tarball=$tarball" >> "$GITHUB_OUTPUT"
+          echo "revision=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload tarball
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-tarball
+          path: dist/daily-english-*.tar.gz
+          if-no-files-found: error
+          retention-days: 30
+
+  deploy:
+    name: Install on production
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    if: inputs.confirmation == 'DEPLOY'
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Download tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: release-tarball
+          path: incoming
+
+      - name: Ship and install
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          PORT: ${{ secrets.DEPLOY_PORT }}
+          SSH_USER: ${{ secrets.DEPLOY_USER }}
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HEALTH_PUBLIC: ${{ secrets.HEALTH_PUBLIC }}
+          REVISION: ${{ needs.build.outputs.revision }}
+        run: |
+          set -euo pipefail
+          for required in HOST PORT SSH_USER KEY; do
+            if [ -z "${!required}" ]; then
+              echo "::error::secret $required is not set on the production environment"
+              exit 1
+            fi
+          done
+
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+          printf '%s\n' "$KEY" > "$HOME/.ssh/id_deploy"
+          chmod 600 "$HOME/.ssh/id_deploy"
+
+          host_key_mode=accept-new
+          if [ -n "$KNOWN_HOSTS" ]; then
+            printf '%s\n' "$KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+            chmod 600 "$HOME/.ssh/known_hosts"
+            host_key_mode=yes
+            echo "== host key pinned from DEPLOY_KNOWN_HOSTS"
+          else
+            echo "::warning::DEPLOY_KNOWN_HOSTS is not set; trusting the host key on first use"
+          fi
+
+          ssh_opts=(-i "$HOME/.ssh/id_deploy" -o IdentitiesOnly=yes -o BatchMode=yes \
+                    -o "StrictHostKeyChecking=$host_key_mode")
+
+          tarball=$(ls incoming/daily-english-*.tar.gz)
+          remote="/tmp/daily-english-$REVISION-$GITHUB_RUN_ID.tar.gz"
+          echo "== uploading $(basename "$tarball") to $remote"
+          scp -P "$PORT" "${ssh_opts[@]}" "$tarball" "$SSH_USER@$HOST:$remote"
+
+          remote_env=""
+          if [ -n "$HEALTH_PUBLIC" ]; then
+            remote_env="HEALTH_PUBLIC='$HEALTH_PUBLIC' "
+          fi
+
+          echo "== installing (remote-deploy.sh from this checkout)"
+          ssh -p "$PORT" "${ssh_opts[@]}" "$SSH_USER@$HOST" \
+            "sudo ${remote_env}bash -s -- $remote" < deploy/remote-deploy.sh
+
+          ssh -p "$PORT" "${ssh_opts[@]}" "$SSH_USER@$HOST" "rm -f $remote"
+          echo "== deploy finished for revision $REVISION"
+
+      - name: Probe the public endpoint from the runner
+        continue-on-error: true
+        env:
+          HEALTH_PUBLIC: ${{ secrets.HEALTH_PUBLIC }}
+        run: |
+          if [ -z "$HEALTH_PUBLIC" ]; then
+            echo "HEALTH_PUBLIC is not set; skipping the runner-side probe"
+            exit 0
+          fi
+          curl -fsSk --max-time 20 "$HEALTH_PUBLIC"
+          echo
+          echo "Public endpoint answered from the runner."

@@ -1,0 +1,194 @@
+name: CI
+
+# One pipeline for all three deliverables. Every push to main and every pull
+# request builds the Vue frontend, the Go API and the Android client in
+# parallel; each job fails on its own and uploads what it produced.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+  JAVA_VERSION: '21'
+  ANDROID_PLATFORM: '36'
+
+jobs:
+  frontend:
+    name: Frontend · Vue
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # `npm test` and `npm run build` both run the pre-scripts that copy
+      # ../content into public/data, so the corpus stays single-sourced.
+      - name: Run unit tests
+        run: npm test
+
+      - name: Build production bundle
+        run: npm run build
+
+      - name: Upload web bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: frontend/dist
+          if-no-files-found: error
+          retention-days: 14
+
+  backend:
+    name: Backend · Go
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: Check formatting
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "::error::These files are not gofmt-clean:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./... -count=1
+
+      - name: Build linux/amd64 binary
+        run: |
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+            go build -trimpath -ldflags="-s -w" -o dist/daily-english-go .
+          file dist/daily-english-go
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-linux-amd64
+          path: backend/dist/daily-english-go
+          if-no-files-found: error
+          retention-days: 14
+
+  android:
+    name: Android · Quiet Glass
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      # AGP downloads missing SDK packages on its own, but only when the
+      # component is publishable; installing the platform explicitly keeps the
+      # first CI run deterministic instead of relying on that fallback.
+      - name: Ensure Android platform
+        run: |
+          SDK="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          if [ ! -d "$SDK/platforms/android-$ANDROID_PLATFORM" ]; then
+            "$SDK/cmdline-tools/latest/bin/sdkmanager" "platforms;android-$ANDROID_PLATFORM"
+          fi
+          echo "Installed platforms:"
+          ls "$SDK/platforms"
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('android/gradle/libs.versions.toml', 'android/gradle/wrapper/gradle-wrapper.properties', 'android/**/build.gradle.kts') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      # No apiBaseUrl is injected here on purpose: the artifact points at
+      # https://daily-english.invalid/ so a CI build can never talk to a real
+      # server. Use the Android Release workflow for an installable build.
+      - name: Unit tests and debug build
+        run: ./gradlew testDebugUnitTest assembleDebug --no-daemon --stacktrace
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-test-report
+          path: |
+            android/app/build/reports/tests
+            android/app/build/test-results
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-debug-apk-no-api
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+
+  scripts:
+    name: Deploy scripts · shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      # A script that loses its executable bit on the way through git breaks the
+      # deploy job with a confusing "permission denied", so fail here instead.
+      - name: Check executable bits
+        run: |
+          status=0
+          for f in deploy/build-release.sh deploy/remote-deploy.sh android/gradlew; do
+            if [ -x "$f" ]; then
+              echo "ok       $f"
+            else
+              echo "::error::$f is not executable (git update-index --chmod=+x $f)"
+              status=1
+            fi
+          done
+          exit $status
+
+      - name: Shellcheck
+        run: shellcheck -x -S warning deploy/build-release.sh deploy/remote-deploy.sh
