@@ -160,14 +160,18 @@ jobs:
           {
             echo "### Android build failure"
             echo '```'
-            tail -n 80 build.log 2>/dev/null || echo "build.log missing"
+            tail -n 200 build.log 2>/dev/null || echo "build.log missing"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           python3 - <<'PY'
           from pathlib import Path
           p = Path("build.log")
           lines = p.read_text(errors="replace").splitlines() if p.exists() else ["build.log missing"]
-          text = "\n".join(lines[-60:])
+          start = next((i for i, line in enumerate(lines)
+                        if "FAILURE: Build failed" in line or "What went wrong:" in line), None)
+          if start is None:
+              start = max(0, len(lines) - 160)
+          text = "\n".join(lines[start:start + 120])
           text = text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
           print(f"::error title=Gradle failure::{text}")
           PY
