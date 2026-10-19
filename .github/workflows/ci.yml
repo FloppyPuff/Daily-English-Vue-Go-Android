@@ -139,9 +139,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('android/gradle/libs.versions.toml', 'android/gradle/wrapper/gradle-wrapper.properties', 'android/**/build.gradle.kts') }}
+          key: gradle-v2-${{ runner.os }}-${{ hashFiles('android/gradle/libs.versions.toml', 'android/gradle/wrapper/gradle-wrapper.properties', 'android/**/build.gradle.kts') }}
           restore-keys: |
-            gradle-${{ runner.os }}-
+            gradle-v2-${{ runner.os }}-
 
       # No apiBaseUrl is injected here on purpose: the artifact points at
       # https://daily-english.invalid/ so a CI build can never talk to a real
