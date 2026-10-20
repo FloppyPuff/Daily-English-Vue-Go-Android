@@ -6,14 +6,14 @@ Daily English 的原生 Android 客户端，Compose + Material 3 的 **Quiet Gla
 - Application ID：`com.dailyenglish.quietglass`
 - Kotlin namespace：`com.dailyenglish.nativeapp`
 - 桌面名：`Daily English Glass`
-- 版本：`1.2.0-quietglass`（versionCode 2）
+- 版本：`1.2.1-quietglass`（versionCode 3）
 - 最低系统：Android 7.0（API 24），compileSdk / targetSdk 36
 
 ## 设计
 
 - 暖白与墨绿渐变背景，低透明鼠尾草与暖沙光晕。
 - 悬浮胶囊底部导航 + 圆形玻璃顶栏按钮。
-- 半透明卡片、1dp 高光描边、柔和阴影；阅读页保持高不透明度。
+- 实色鼠尾草卡片、1dp 高光描边、柔和阴影；专注面板保持完全不透明。
 - 认证、专注面板、设置与统计统一玻璃语言。
 - 不引入新图形依赖，不使用 `RenderEffect` 真实背景模糊，因此 API 24 起表现一致。
 
