@@ -38,8 +38,8 @@ android {
     applicationId = "com.dailyenglish.quietglass"
     minSdk = 24
     targetSdk = 36
-    versionCode = 4
-    versionName = "1.2.2-quietglass"
+    versionCode = 5
+    versionName = "1.2.3-quietglass"
     buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
   }
 
