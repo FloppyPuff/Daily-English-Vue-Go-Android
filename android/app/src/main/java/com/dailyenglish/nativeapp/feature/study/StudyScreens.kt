@@ -31,7 +31,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -47,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.dailyenglish.nativeapp.core.learning.DailyPlan
 import com.dailyenglish.nativeapp.core.learning.PlanStep
@@ -202,7 +202,9 @@ private fun PlanRow(step: PlanStep, index: Int, active: Boolean, onClick: () -> 
       Text(planCaption(step), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
     if (active) {
-      FilledTonalButton(onClick = onClick) { Text("进入") }
+      Button(onClick = onClick) {
+        Text("进入", fontWeight = FontWeight.SemiBold)
+      }
     } else {
       TextButton(onClick = onClick) { Text(if (step.pending == 0) "查看" else "进入") }
     }

@@ -1,9 +1,9 @@
 package com.dailyenglish.nativeapp.feature.study
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,14 +19,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.dailyenglish.nativeapp.theme.GlassSurface
 import com.dailyenglish.nativeapp.theme.NumberStyle
+import com.dailyenglish.nativeapp.theme.glassBorderBrush
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,12 +41,14 @@ fun FocusSheet(
   ModalBottomSheet(
     onDismissRequest = onDismiss,
     containerColor = Color.Transparent,
-    scrimColor = Color.Black.copy(alpha = 0.22f),
+    scrimColor = Color.Black.copy(alpha = 0.38f),
   ) {
     Box(Modifier.fillMaxWidth().padding(12.dp)) {
-      GlassSurface(
+      Surface(
         shape = RoundedCornerShape(30.dp),
-        contentPadding = PaddingValues(0.dp),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 1f),
+        border = BorderStroke(1.dp, glassBorderBrush()),
+        shadowElevation = 6.dp,
         modifier = Modifier.fillMaxWidth(),
       ) {
         Column(
