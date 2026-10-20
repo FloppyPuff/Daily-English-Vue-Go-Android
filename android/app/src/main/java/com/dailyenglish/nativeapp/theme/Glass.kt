@@ -70,8 +70,11 @@ private fun DrawScope.drawRadial(color: Color, center: Offset, radius: Float) {
 @Composable
 fun glassSurfaceColor(): Color {
   val dark = isSystemInDarkTheme()
+  // Follow the active scheme so wallpaper-derived (Material You) palettes also
+  // tint the floating nav and top-bar buttons. The static light theme maps
+  // surfaceContainer to the same sage used previously.
   return if (dark) MaterialTheme.colorScheme.surface.copy(alpha = 0.82f)
-    else Color(0xFFE8F0E2)
+    else MaterialTheme.colorScheme.surfaceContainer
 }
 
 @Composable
