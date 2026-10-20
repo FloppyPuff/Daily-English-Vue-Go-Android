@@ -55,6 +55,14 @@ android {
   }
 
   buildTypes {
+    debug {
+      // Allows a side-by-side debug install without touching the signed
+      // release app; enable with -PdevSuffix=1.
+      if (providers.gradleProperty("devSuffix").orNull == "1") {
+        applicationIdSuffix = ".dev"
+        versionNameSuffix = "-dev"
+      }
+    }
     release {
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")

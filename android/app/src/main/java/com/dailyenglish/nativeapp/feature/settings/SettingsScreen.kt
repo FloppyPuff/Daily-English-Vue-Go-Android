@@ -128,7 +128,7 @@ fun SettingsScreen(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, glassBorderBrush()),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier.fillMaxWidth(),
       ) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -180,7 +180,7 @@ fun SettingsScreen(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, glassBorderBrush()),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier.fillMaxWidth(),
       ) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -246,7 +246,7 @@ fun SettingsScreen(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, glassBorderBrush()),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier.fillMaxWidth(),
       ) {
         Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -272,7 +272,7 @@ fun SettingsScreen(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, glassBorderBrush()),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier.fillMaxWidth(),
       ) {
         Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {

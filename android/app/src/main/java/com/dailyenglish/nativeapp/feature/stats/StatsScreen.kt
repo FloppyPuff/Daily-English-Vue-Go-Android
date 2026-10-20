@@ -122,10 +122,10 @@ private fun StatCard(item: StatItem, modifier: Modifier) {
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = modifier,
   ) {
-    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+    Column(Modifier.padding(16.dp).background(MaterialTheme.colorScheme.surface), verticalArrangement = Arrangement.spacedBy(3.dp)) {
       Text(item.label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
       Row(verticalAlignment = Alignment.Bottom) {
         Text(item.value, style = MaterialTheme.typography.headlineMedium.copy(fontFamily = FontFamily.Monospace))
@@ -142,10 +142,10 @@ private fun WeekPanel(week: List<WeekSlice>, modifier: Modifier) {
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = modifier,
   ) {
-    Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(Modifier.padding(18.dp).background(MaterialTheme.colorScheme.surface), verticalArrangement = Arrangement.spacedBy(10.dp)) {
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text("最近七天的节奏", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
         Text("词汇练习", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -183,10 +183,10 @@ private fun MasteryPanel(stats: Statistics, examLabel: String, modifier: Modifie
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = modifier,
   ) {
-    Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(Modifier.padding(18.dp).background(MaterialTheme.colorScheme.surface), verticalArrangement = Arrangement.spacedBy(10.dp)) {
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text("词汇掌握情况", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
         Text(examLabel, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -222,10 +222,10 @@ private fun HeatmapPanel(heatmap: List<HeatCell>) {
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = Modifier.fillMaxWidth(),
   ) {
-    Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(Modifier.padding(18.dp).background(MaterialTheme.colorScheme.surface), verticalArrangement = Arrangement.spacedBy(10.dp)) {
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text("学习热力图", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
         Text("近 12 周", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

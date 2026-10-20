@@ -70,7 +70,8 @@ private fun DrawScope.drawRadial(color: Color, center: Offset, radius: Float) {
 @Composable
 fun glassSurfaceColor(): Color {
   val dark = isSystemInDarkTheme()
-  return MaterialTheme.colorScheme.surface.copy(alpha = if (dark) 0.82f else 0.78f)
+  return if (dark) MaterialTheme.colorScheme.surface.copy(alpha = 0.82f)
+    else Color(0xFFE8F0E2)
 }
 
 @Composable
@@ -78,7 +79,7 @@ fun glassBorderBrush(): Brush {
   val dark = isSystemInDarkTheme()
   return Brush.linearGradient(
     listOf(
-      Color.White.copy(alpha = if (dark) 0.22f else 0.85f),
+      Color.White.copy(alpha = if (dark) 0.22f else 0.55f),
       Color.White.copy(alpha = if (dark) 0.04f else 0.18f),
     ),
   )
@@ -95,7 +96,7 @@ fun GlassSurface(
   Surface(
     shape = shape,
     color = Color.Transparent,
-    shadowElevation = 10.dp,
+    shadowElevation = 4.dp,
     modifier = modifier,
   ) {
     Column(
@@ -122,7 +123,7 @@ fun GlassCard(
     onClick = onClick,
     shape = shape,
     color = Color.Transparent,
-    shadowElevation = 8.dp,
+    shadowElevation = 3.dp,
     modifier = modifier,
   ) {
     Column(
@@ -148,7 +149,7 @@ fun GlassCircleButton(
     onClick = onClick,
     shape = CircleShape,
     color = Color.Transparent,
-    shadowElevation = 6.dp,
+    shadowElevation = 3.dp,
     modifier = modifier.size(size),
   ) {
     Box(
@@ -180,7 +181,7 @@ fun GlassActionButton(
     onClick = onClick,
     shape = CircleShape,
     color = Color.Transparent,
-    shadowElevation = 6.dp,
+    shadowElevation = 3.dp,
     modifier = modifier,
   ) {
     Row(

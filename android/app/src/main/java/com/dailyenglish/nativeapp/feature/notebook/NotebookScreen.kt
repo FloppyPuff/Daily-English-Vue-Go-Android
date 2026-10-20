@@ -1,6 +1,7 @@
 package com.dailyenglish.nativeapp.feature.notebook
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -134,10 +135,10 @@ private fun WordSection(
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = modifier,
   ) {
-    Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(Modifier.padding(18.dp).background(MaterialTheme.colorScheme.surface), verticalArrangement = Arrangement.spacedBy(4.dp)) {
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text("单词", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
         Text("${words.size} 词", style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -198,10 +199,10 @@ private fun SentenceSection(
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = modifier,
   ) {
-    Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(Modifier.padding(18.dp).background(MaterialTheme.colorScheme.surface), verticalArrangement = Arrangement.spacedBy(4.dp)) {
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text("句子", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
         Text("${sentences.size} 句", style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -258,10 +259,10 @@ private fun EmptyNotebook(tab: String) {
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = Modifier.fillMaxWidth(),
   ) {
-    Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    Column(Modifier.padding(22.dp).background(MaterialTheme.colorScheme.surface), verticalArrangement = Arrangement.spacedBy(6.dp)) {
       Text(if (tab == "mistakes") "还没有需要补的地方。" else "先留住一点点。", style = MaterialTheme.typography.titleMedium)
       Text(
         if (tab == "mistakes") "标记为薄弱或答错的内容会出现在这里。"

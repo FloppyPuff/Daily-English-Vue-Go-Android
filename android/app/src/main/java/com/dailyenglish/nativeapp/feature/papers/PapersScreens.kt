@@ -100,7 +100,7 @@ fun PapersScreen(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, glassBorderBrush()),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier.fillMaxWidth(),
       ) {
         Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -174,7 +174,7 @@ private fun GroupRow(group: PaperGroup, status: String, onClick: () -> Unit) {
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = Modifier.fillMaxWidth(),
   ) {
     Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -292,7 +292,7 @@ fun PaperGroupScreen(
           colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
           shape = MaterialTheme.shapes.large,
           border = BorderStroke(1.dp, glassBorderBrush()),
-          elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+          elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
           modifier = Modifier.fillMaxWidth(),
         ) {
           Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -319,7 +319,7 @@ private fun QuestionCard(question: PaperQuestionDto, picked: String, checked: Bo
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = Modifier.fillMaxWidth(),
   ) {
     Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -377,7 +377,7 @@ private fun TranslationQuestion(
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = Modifier.fillMaxWidth(),
   ) {
     Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -420,7 +420,7 @@ private fun TranslationFooter(
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = Modifier.fillMaxWidth(),
   ) {
     Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {

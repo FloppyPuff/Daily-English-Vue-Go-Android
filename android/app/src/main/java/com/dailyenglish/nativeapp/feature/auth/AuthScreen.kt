@@ -1,6 +1,7 @@
 package com.dailyenglish.nativeapp.feature.auth
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -73,10 +74,10 @@ fun AuthScreen(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
       shape = MaterialTheme.shapes.extraLarge,
       border = BorderStroke(1.dp, glassBorderBrush()),
-      elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+      elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
       modifier = Modifier.fillMaxWidth(),
     ) {
-      Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+      Column(Modifier.padding(22.dp).background(MaterialTheme.colorScheme.surface), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("登录或注册", style = MaterialTheme.typography.titleLarge)
 
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {

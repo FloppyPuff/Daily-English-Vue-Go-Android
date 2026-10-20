@@ -116,7 +116,15 @@ fun MainNavigation(
       topBar = {
         TopAppBar(
           title = {
-            Text(titleFor(current), style = MaterialTheme.typography.titleLarge)
+            Text(
+              titleFor(current),
+              style = if (current is Today) {
+                MaterialTheme.typography.headlineSmall
+              } else {
+                MaterialTheme.typography.titleLarge
+              },
+              fontWeight = if (current is Today) FontWeight.SemiBold else null,
+            )
           },
           navigationIcon = {
             if (backStack.size > 1) {
@@ -172,7 +180,7 @@ fun MainNavigation(
           Surface(
             shape = RoundedCornerShape(28.dp),
             color = Color.Transparent,
-            shadowElevation = 8.dp,
+            shadowElevation = 3.dp,
             modifier = Modifier.padding(10.dp),
           ) {
             Box(
@@ -394,7 +402,7 @@ private fun isSelected(current: NavKey?, target: NavKey): Boolean = when (target
 }
 
 private fun titleFor(key: NavKey?): String = when (key) {
-  Today -> "今日学习"
+  Today -> "Daily English"
   Practice -> "自由练习"
   is Words -> "词汇练习"
   Sentences -> "句子翻译"

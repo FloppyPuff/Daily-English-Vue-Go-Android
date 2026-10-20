@@ -1,6 +1,7 @@
 package com.dailyenglish.nativeapp.feature.study
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -97,17 +98,17 @@ fun TodayScreen(
     verticalArrangement = Arrangement.spacedBy(18.dp),
   ) {
     item {
-      Text("$day · CET-6 + 考研", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
+      Text(day, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
     }
     item {
       Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.82f)),
         shape = MaterialTheme.shapes.extraLarge,
         border = BorderStroke(1.dp, glassBorderBrush()),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier.fillMaxWidth(),
       ) {
-        Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Column(Modifier.padding(22.dp).background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.82f)), verticalArrangement = Arrangement.spacedBy(14.dp)) {
           Row(verticalAlignment = Alignment.CenterVertically) {
             Text("今日计划", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
             Spacer(Modifier.weight(1f))
@@ -149,10 +150,10 @@ fun TodayScreen(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, glassBorderBrush()),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier.fillMaxWidth(),
       ) {
-        Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.padding(20.dp).background(MaterialTheme.colorScheme.surface), verticalAlignment = Alignment.CenterVertically) {
           Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier.size(44.dp)) {
             Box(contentAlignment = Alignment.Center) {
               Icon(Icons.Outlined.School, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
@@ -269,10 +270,10 @@ private fun PracticeCard(title: String, caption: String, icon: ImageVector, onCl
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.large,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
     modifier = Modifier.fillMaxWidth(),
   ) {
-    Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.padding(20.dp).background(MaterialTheme.colorScheme.surface), verticalAlignment = Alignment.CenterVertically) {
       Surface(shape = CircleShape, color = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.size(48.dp)) {
         Box(contentAlignment = Alignment.Center) {
           Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
@@ -314,10 +315,10 @@ fun ReviewScreen(ui: StudyUiState, onStart: () -> Unit) {
           colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
           shape = MaterialTheme.shapes.large,
           border = BorderStroke(1.dp, glassBorderBrush()),
-          elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+          elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
           modifier = Modifier.fillMaxWidth(),
         ) {
-          Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+          Column(Modifier.padding(22.dp).background(MaterialTheme.colorScheme.surface), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("暂时没有到期单词", style = MaterialTheme.typography.titleMedium)
             Text("新词会在到期后自动出现。", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
           }
@@ -332,7 +333,7 @@ fun ReviewScreen(ui: StudyUiState, onStart: () -> Unit) {
           elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
           modifier = Modifier.fillMaxWidth(),
         ) {
-          Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+          Row(Modifier.padding(16.dp).background(MaterialTheme.colorScheme.surface), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
               Text(word.id, style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif))
               Text(word.meaning, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

@@ -115,7 +115,7 @@ fun WordsScreen(
           colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
           shape = MaterialTheme.shapes.large,
           border = BorderStroke(1.dp, glassBorderBrush()),
-          elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+          elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
           modifier = Modifier.fillMaxWidth(),
         ) {
           Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -177,7 +177,7 @@ private fun WordCard(
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     shape = MaterialTheme.shapes.extraLarge,
     border = BorderStroke(1.dp, glassBorderBrush()),
-    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     modifier = Modifier.fillMaxWidth(),
   ) {
     Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
