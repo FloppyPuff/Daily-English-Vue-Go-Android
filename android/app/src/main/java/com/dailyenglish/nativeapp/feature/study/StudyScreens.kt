@@ -102,13 +102,13 @@ fun TodayScreen(
     }
     item {
       Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.82f)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
         shape = MaterialTheme.shapes.extraLarge,
         border = BorderStroke(1.dp, glassBorderBrush()),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier.fillMaxWidth(),
       ) {
-        Column(Modifier.padding(22.dp).background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.82f)), verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
           Row(verticalAlignment = Alignment.CenterVertically) {
             Text("今日计划", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
             Spacer(Modifier.weight(1f))
