@@ -22,7 +22,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
@@ -41,6 +40,7 @@ import com.dailyenglish.nativeapp.core.learning.NotebookWord
 import com.dailyenglish.nativeapp.feature.study.StudyError
 import com.dailyenglish.nativeapp.feature.study.StudyLoading
 import com.dailyenglish.nativeapp.theme.glassBorderBrush
+import com.dailyenglish.nativeapp.ui.components.AppSegmentedButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,7 +66,7 @@ fun NotebookScreen(
   ) {
     SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
       listOf("saved" to "我的收藏", "mistakes" to "薄弱 & 错题").forEachIndexed { index, (key, label) ->
-        SegmentedButton(
+        AppSegmentedButton(
           selected = ui.tab == key,
           onClick = { viewModel.setTab(key) },
           shape = SegmentedButtonDefaults.itemShape(index, 2),

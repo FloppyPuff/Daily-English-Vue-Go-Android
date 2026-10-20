@@ -28,7 +28,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
@@ -56,6 +55,7 @@ import com.dailyenglish.nativeapp.data.content.PaperQuestionDto
 import com.dailyenglish.nativeapp.feature.study.StudyError
 import com.dailyenglish.nativeapp.feature.study.StudyLoading
 import com.dailyenglish.nativeapp.theme.NumberStyle
+import com.dailyenglish.nativeapp.ui.components.AppSegmentedButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +84,7 @@ fun PapersScreen(
     item {
       SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
         exams.forEachIndexed { index, exam ->
-          SegmentedButton(
+          AppSegmentedButton(
             selected = filter == exam,
             onClick = { filter = exam },
             shape = SegmentedButtonDefaults.itemShape(index, exams.size),

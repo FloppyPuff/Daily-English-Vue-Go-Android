@@ -25,7 +25,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
@@ -37,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.dailyenglish.nativeapp.theme.glassBorderBrush
+import com.dailyenglish.nativeapp.ui.components.AppSegmentedButton
 
 @Composable
 fun AuthScreen(
@@ -81,12 +81,12 @@ fun AuthScreen(
         Text("登录或注册", style = MaterialTheme.typography.titleLarge)
 
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-          SegmentedButton(
+          AppSegmentedButton(
             selected = state.mode == AuthMode.REGISTER,
             onClick = { onMode(AuthMode.REGISTER) },
             shape = SegmentedButtonDefaults.itemShape(0, 2),
           ) { Text("注册") }
-          SegmentedButton(
+          AppSegmentedButton(
             selected = state.mode == AuthMode.LOGIN,
             onClick = { onMode(AuthMode.LOGIN) },
             shape = SegmentedButtonDefaults.itemShape(1, 2),

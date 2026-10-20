@@ -35,7 +35,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
@@ -55,6 +54,7 @@ import com.dailyenglish.nativeapp.core.model.AppState
 import com.dailyenglish.nativeapp.data.content.WordDto
 import com.dailyenglish.nativeapp.theme.NumberStyle
 import com.dailyenglish.nativeapp.theme.glassBorderBrush
+import com.dailyenglish.nativeapp.ui.components.AppSegmentedButton
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -66,7 +66,7 @@ import java.util.Locale
 fun StatsExamSwitch(exam: String, onExam: (String) -> Unit, modifier: Modifier = Modifier) {
   SingleChoiceSegmentedButtonRow(modifier) {
     listOf("all" to "全部", "cet6" to "CET-6", "postgrad" to "考研英语").forEachIndexed { index, (value, label) ->
-      SegmentedButton(
+      AppSegmentedButton(
         selected = exam == value,
         onClick = { onExam(value) },
         shape = SegmentedButtonDefaults.itemShape(index, 3),

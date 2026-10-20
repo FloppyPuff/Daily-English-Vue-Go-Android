@@ -42,7 +42,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
@@ -70,6 +69,7 @@ import com.dailyenglish.nativeapp.data.content.WordDto
 import com.dailyenglish.nativeapp.theme.NumberStyle
 import com.dailyenglish.nativeapp.theme.WordHeadwordStyle
 import com.dailyenglish.nativeapp.theme.glassBorderBrush
+import com.dailyenglish.nativeapp.ui.components.AppSegmentedButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,7 +104,7 @@ fun WordsScreen(
   Column(Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp)) {
     SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
       listOf("new" to "闪卡记忆", "spell" to "拼写自测", "library" to "词库浏览").forEachIndexed { index, (value, label) ->
-        SegmentedButton(
+        AppSegmentedButton(
           selected = selectedMode == value,
           onClick = { onStartSession(value, null) },
           shape = SegmentedButtonDefaults.itemShape(index, 3),
