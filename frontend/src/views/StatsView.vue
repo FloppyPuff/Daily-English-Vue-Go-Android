@@ -27,6 +27,8 @@ const heatCells = computed(() => {
   return cells;
 });
 
+const heatWeeks = computed(() => Math.ceil(heatCells.value.length / 7));
+
 function level(count) {
   return count > 20 ? 3 : count > 5 ? 2 : count > 0 ? 1 : 0;
 }
@@ -80,7 +82,12 @@ function level(count) {
       <div class="spread panel-head"><h2>学习热力图</h2><span class="small faint">最近 12 周</span></div>
       <div class="heat-wrap">
         <div class="weekdays" aria-hidden="true"><span>一</span><span /><span>三</span><span /><span>五</span><span /><span>日</span></div>
-        <div class="heat-grid" role="img" aria-label="最近十二周学习热力图">
+        <div
+          class="heat-grid"
+          role="img"
+          aria-label="最近十二周学习热力图"
+          :style="{ gridTemplateColumns: `repeat(${heatWeeks}, minmax(0, 1fr))` }"
+        >
           <span
             v-for="(cell, index) in heatCells"
             :key="index"
@@ -121,10 +128,11 @@ function level(count) {
 .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--line-strong); }
 .dot.strong { background: var(--moss); }
 .dot.mid { background: color-mix(in srgb, var(--moss) 40%, var(--paper)); }
-.heat-wrap { display: flex; gap: 8px; margin-top: 16px; overflow-x: auto; }
-.weekdays { display: grid; grid-template-rows: repeat(7, 12px); gap: 3px; color: var(--ink-faint); font-size: 9px; line-height: 12px; }
-.heat-grid { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 12px); gap: 3px; }
-.cell { display: block; width: 12px; height: 12px; border-radius: 2px; background: var(--paper-sunken); }
+.heat-wrap { display: flex; align-items: stretch; justify-content: center; gap: 10px; margin-top: 16px; }
+.weekdays { display: grid; flex: 0 0 12px; grid-template-rows: repeat(7, 1fr); gap: 4px; color: var(--ink-faint); font-size: 9px; }
+.weekdays span { display: flex; align-items: center; justify-content: flex-end; }
+.heat-grid { display: grid; flex: 1 1 560px; grid-auto-flow: column; grid-template-rows: repeat(7, auto); gap: 4px; min-width: 0; max-width: 560px; }
+.cell { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: 3px; background: var(--paper-sunken); }
 .cell.blank { background: transparent; }
 .cell.level-1 { background: color-mix(in srgb, var(--moss) 30%, var(--paper)); }
 .cell.level-2 { background: color-mix(in srgb, var(--moss) 60%, var(--paper)); }
