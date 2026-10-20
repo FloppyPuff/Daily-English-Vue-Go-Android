@@ -226,10 +226,8 @@ fun MainNavigation(
           NavDisplay(
             backStack = backStack,
         transitionSpec = {
-          val from = initialState.key
-          val to = targetState.key
-          val fromTab = topDestinations.indexOfFirst { it.key == from }
-          val toTab = topDestinations.indexOfFirst { it.key == to }
+          val fromTab = tabIndexOf(initialState.key)
+          val toTab = tabIndexOf(targetState.key)
           pageSlide(forward = if (fromTab >= 0 && toTab >= 0) toTab >= fromTab else true)
         },
         popTransitionSpec = { pageSlide(forward = false) },
@@ -435,6 +433,24 @@ private fun titleFor(key: NavKey?): String = when (key) {
 }
 
 private fun formatClock(seconds: Int): String = "%02d:%02d".format(seconds / 60, seconds % 60)
+
+// NavDisplay exposes a scene key as the entry's contentKey, which for our
+// destinations is the key's toString(); resolve detail screens to their tab so
+// tapping a bottom tab still slides in the direction of the tab order.
+private fun tabIndexOf(key: Any?): Int {
+  val label = key?.toString() ?: return -1
+  val direct = topDestinations.indexOfFirst { it.key.toString() == label }
+  if (direct >= 0) return direct
+  return when {
+    label.startsWith("Words(") ||
+      label == "Sentences" ||
+      label == "Review" ||
+      label.startsWith("Papers") ||
+      label.startsWith("PaperSet(") ||
+      label.startsWith("PaperGroup(") -> 1
+    else -> -1
+  }
+}
 
 private fun AnimatedContentTransitionScope<Scene<NavKey>>.pageSlide(forward: Boolean): ContentTransform {
   val towards = if (forward) SlideDirection.Start else SlideDirection.End
