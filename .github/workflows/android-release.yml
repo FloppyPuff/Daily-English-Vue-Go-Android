@@ -177,7 +177,6 @@ jobs:
           NAME: ${{ steps.apk.outputs.name }}
           VERSION: ${{ steps.apk.outputs.version }}
           KIND: ${{ steps.apk.outputs.kind }}
-          API_URL: ${{ steps.api.outputs.url }}
         run: |
           set -euo pipefail
           tag="${GITHUB_REF_NAME}"
@@ -192,7 +191,6 @@ jobs:
           fi
           notes="Android build $VERSION ($KIND).
 
-          - API origin baked in: \`$API_URL\`
           - Commit: \`$GITHUB_SHA\`
           - $signing_note"
           if gh release view "$tag" >/dev/null 2>&1; then
