@@ -1,7 +1,11 @@
 package com.dailyenglish.nativeapp.feature.study
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
@@ -49,13 +54,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import com.dailyenglish.nativeapp.core.learning.bestTier
 import com.dailyenglish.nativeapp.data.content.WordDto
 import com.dailyenglish.nativeapp.theme.NumberStyle
@@ -72,6 +81,7 @@ fun WordsScreen(
   onReveal: () -> Unit,
   onRate: (String) -> Unit,
   onNext: () -> Unit,
+  onPrevious: () -> Unit,
   onSpellingInput: (String) -> Unit,
   onCheckSpelling: () -> Unit,
   onToggleSave: (String) -> Unit,
@@ -125,23 +135,31 @@ fun WordsScreen(
         }
       }
       else -> Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
-        WordCard(
-          word = current,
-          index = ui.wordIndex,
-          total = ui.wordQueue.size,
-          revealed = ui.revealed,
-          spelling = selectedMode == "spell",
-          spellingInput = ui.spellingInput,
-          spellingChecked = ui.spellingChecked,
-          spellingCorrect = ui.spellingCorrect,
-          saved = ui.progress.savedWords.contains(current.id),
-          onReveal = onReveal,
-          onRate = onRate,
-          onSpellingInput = onSpellingInput,
-          onCheckSpelling = onCheckSpelling,
-          onToggleSave = { onToggleSave(current.id) },
-          onSpeak = { onSpeak(current) },
-        )
+        SwipeableWordCard(
+          wordKey = current.id,
+          swipeEnabled = ui.wordMode != "browse" && selectedMode != "spell",
+          canGoPrevious = ui.wordIndex > 0,
+          onPrevious = onPrevious,
+          onNext = onNext,
+        ) {
+          WordCard(
+            word = current,
+            index = ui.wordIndex,
+            total = ui.wordQueue.size,
+            revealed = ui.revealed,
+            spelling = selectedMode == "spell",
+            spellingInput = ui.spellingInput,
+            spellingChecked = ui.spellingChecked,
+            spellingCorrect = ui.spellingCorrect,
+            saved = ui.progress.savedWords.contains(current.id),
+            onReveal = onReveal,
+            onRate = onRate,
+            onSpellingInput = onSpellingInput,
+            onCheckSpelling = onCheckSpelling,
+            onToggleSave = { onToggleSave(current.id) },
+            onSpeak = { onSpeak(current) },
+          )
+        }
         Spacer(Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
           Text("${ui.wordQueue.size} 词 · 第 ${ui.wordIndex + 1} 词", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -152,6 +170,57 @@ fun WordsScreen(
       }
     }
   }
+}
+
+@Composable
+private fun SwipeableWordCard(
+  wordKey: String,
+  swipeEnabled: Boolean,
+  canGoPrevious: Boolean,
+  onPrevious: () -> Unit,
+  onNext: () -> Unit,
+  content: @Composable () -> Unit,
+) {
+  val offset = remember(wordKey) { Animatable(0f) }
+  val scope = rememberCoroutineScope()
+  Box(
+    modifier = Modifier
+      .fillMaxWidth()
+      .graphicsLayer {
+        translationX = offset.value
+        rotationZ = if (size.width > 0) offset.value / size.width * 2.5f else 0f
+      }
+      .pointerInput(wordKey, swipeEnabled, canGoPrevious) {
+        if (!swipeEnabled) return@pointerInput
+        detectHorizontalDragGestures(
+          onHorizontalDrag = { change, dragAmount ->
+            change.consume()
+            scope.launch {
+              offset.snapTo((offset.value + dragAmount).coerceIn(-size.width * 0.7f, size.width * 0.7f))
+            }
+          },
+          onDragEnd = {
+            val threshold = size.width * 0.22f
+            scope.launch {
+              when {
+                offset.value <= -threshold -> {
+                  offset.animateTo(-size.width * 1.1f, tween(140))
+                  onNext()
+                }
+                offset.value >= threshold && canGoPrevious -> {
+                  offset.animateTo(size.width * 1.1f, tween(140))
+                  onPrevious()
+                }
+                else -> offset.animateTo(0f, spring(stiffness = 700f))
+              }
+            }
+          },
+          onDragCancel = {
+            scope.launch { offset.animateTo(0f, tween(120)) }
+          },
+        )
+      },
+  ) { content() }
 }
 
 @Composable
@@ -329,6 +398,7 @@ private fun LibraryView(
       placeholder = { Text("搜索单词、释义或主题…") },
       leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
       singleLine = true,
+      shape = RoundedCornerShape(999.dp),
       modifier = Modifier.fillMaxWidth(),
     )
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

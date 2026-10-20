@@ -1,5 +1,12 @@
 package com.dailyenglish.nativeapp.ui.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -61,6 +68,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.scene.Scene
 import androidx.navigation3.ui.NavDisplay
 import com.dailyenglish.nativeapp.feature.notebook.NotebookScreen
 import com.dailyenglish.nativeapp.feature.papers.PaperGroupScreen
@@ -217,6 +225,15 @@ fun MainNavigation(
         Box(Modifier.weight(1f)) {
           NavDisplay(
             backStack = backStack,
+        transitionSpec = {
+          val from = initialState.key
+          val to = targetState.key
+          val fromTab = topDestinations.indexOfFirst { it.key == from }
+          val toTab = topDestinations.indexOfFirst { it.key == to }
+          pageSlide(forward = if (fromTab >= 0 && toTab >= 0) toTab >= fromTab else true)
+        },
+        popTransitionSpec = { pageSlide(forward = false) },
+        predictivePopTransitionSpec = { pageSlide(forward = false) },
         onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
         entryProvider = entryProvider {
           entry<Today> {
@@ -271,6 +288,7 @@ fun MainNavigation(
               onReveal = studyViewModel::revealWord,
               onRate = studyViewModel::rateWord,
               onNext = studyViewModel::nextWord,
+              onPrevious = studyViewModel::previousWord,
               onSpellingInput = studyViewModel::setSpellingInput,
               onCheckSpelling = studyViewModel::checkSpelling,
               onToggleSave = studyViewModel::toggleSavedWord,
@@ -417,3 +435,13 @@ private fun titleFor(key: NavKey?): String = when (key) {
 }
 
 private fun formatClock(seconds: Int): String = "%02d:%02d".format(seconds / 60, seconds % 60)
+
+private fun AnimatedContentTransitionScope<Scene<NavKey>>.pageSlide(forward: Boolean): ContentTransform {
+  val towards = if (forward) SlideDirection.Start else SlideDirection.End
+  return ContentTransform(
+    targetContentEnter =
+      slideIntoContainer(towards, tween(240, easing = FastOutSlowInEasing)) + fadeIn(tween(150)),
+    initialContentExit =
+      slideOutOfContainer(towards, tween(240, easing = FastOutSlowInEasing)) + fadeOut(tween(150)),
+  )
+}

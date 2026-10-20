@@ -196,6 +196,20 @@ class StudyViewModel @Inject constructor(
 
   fun nextWord() = advanceWord()
 
+  fun previousWord() {
+    val current = _state.value
+    if (current.wordIndex <= 0) return
+    _state.update {
+      it.copy(
+        wordIndex = it.wordIndex - 1,
+        revealed = false,
+        spellingInput = "",
+        spellingChecked = false,
+        spellingCorrect = null,
+      )
+    }
+  }
+
   private fun advanceWord() {
     val current = _state.value
     if (current.wordIndex < current.wordQueue.size) {
