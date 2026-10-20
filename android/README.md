@@ -6,7 +6,7 @@ Daily English 的原生 Android 客户端，Compose + Material 3 的 **Quiet Gla
 - Application ID：`com.dailyenglish.quietglass`
 - Kotlin namespace：`com.dailyenglish.nativeapp`
 - 桌面名：`Daily English Glass`
-- 版本：`1.2.1-quietglass`（versionCode 3）
+- 版本：`1.2.2-quietglass`（versionCode 4）
 - 最低系统：Android 7.0（API 24），compileSdk / targetSdk 36
 
 ## 设计
